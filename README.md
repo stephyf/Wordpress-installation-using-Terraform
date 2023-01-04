@@ -66,6 +66,13 @@ $ terraform init
 
 Here we are going to create VPC in the region ap-south-1 with name "terraformvpc" using the block 172.16.0.0/16. In this setup I am planning to do the wordpress installation with 6 subnets. 3 of them are public and 3 of them are private. For using these subnets, I need to configure some other resources like internet-gateway, NAT-gateway, Route-tables. Once we finished the creation of VPC . Then, we are going to download and install wordpress in instance called "frontend" and database in "backend". We can SSH to both the instances via "bastion". Since updating the value of DB_HOST in wp-config.php file is demanding, we need to create a private hosted zone define an A record whose IP address will be the private IP address of the Backend-server. This A record is used as the value of DB_HOST. Once it has been done, we can check whether the site is loading fine by accessing the site with the domain name assigned to the public IP of the "frontend". If the site running without issues, our setup has been completed.
 
+### Deploy infra using below Terraform commands
+
+```
+$ terraform validate 
+$ terraform plan
+$ terraform apply
+```
 
 Hope this will definitely help you to setup a simple wordpress setup with VPC and subnets and how to execute the same using Terraform...Try same and have fun!!!!
 
