@@ -3,6 +3,10 @@
 
 Hi! I'm here to discuss Wordpress installation using Terraform. I am planning to execute this setup using VPC and subnets and going to try this setup using Terraform. 
 
+## Project Description
+
+Here we are going to create VPC in the region ap-south-1 with name "terraformvpc" using the block 172.16.0.0/16. In this setup I am planning to do the wordpress installation with 6 subnets. 3 of them are public and 3 of them are private. For using these subnets, I need to configure some other resources like internet-gateway, NAT-gateway, Route-tables. Once we finished the creation of VPC . Then, we are going to download and install wordpress in instance called "frontend" and database in "backend". We can SSH to both the instances via "bastion". Since updating the value of DB_HOST in wp-config.php file is demanding, we need to create a private hosted zone with an A record whose IP address will be the private IP address of the "backend" server. This A record is used as the value of DB_HOST. Once it has been done, we can check whether the site is loading fine by accessing the site with the domain name assigned to the public IP of the "frontend". If the site running without issues, our setup has been completed.
+
 ## Following are the resources we need to create for this setup:
 
 - VPC 
@@ -19,8 +23,9 @@ Hi! I'm here to discuss Wordpress installation using Terraform. I am planning to
 ## Prerequisites
 
 - IAM user with Programmatic access to AWS with AmazonEc2FullAccess and AmazonRoute53FullAccess
-- Initializing Terraform 
-
+- Initializing Terraform and creating project directory
+- SSH Key Pair
+- Deploy infra using below Terraform commands
 
 ### IAM user with Programmatic access to AWS with AmazonEc2FullAccess and AmazonRoute53FullAccess
 
@@ -55,16 +60,39 @@ Here we are using AWS as provider. To start the work we need to initialize the t
 ```
 https://registry.terraform.io/providers/hashicorp/aws/4.48.0
 ```
-### Initialize the Terraform project directory
+#### Initialize the Terraform project directory
 
 After configuring provider we can use below command to initialize project directory. 
 
 ```
 $ terraform init
 ```
-## Project Description
+### SSH KeyPair
 
-Here we are going to create VPC in the region ap-south-1 with name "terraformvpc" using the block 172.16.0.0/16. In this setup I am planning to do the wordpress installation with 6 subnets. 3 of them are public and 3 of them are private. For using these subnets, I need to configure some other resources like internet-gateway, NAT-gateway, Route-tables. Once we finished the creation of VPC . Then, we are going to download and install wordpress in instance called "frontend" and database in "backend". We can SSH to both the instances via "bastion". Since updating the value of DB_HOST in wp-config.php file is demanding, we need to create a private hosted zone define an A record whose IP address will be the private IP address of the Backend-server. This A record is used as the value of DB_HOST. Once it has been done, we can check whether the site is loading fine by accessing the site with the domain name assigned to the public IP of the "frontend". If the site running without issues, our setup has been completed.
+```
+$ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/ec2-user/.ssh/id_rsa): mykey
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in mykey.
+Your public key has been saved in mykey.pub.
+The key fingerprint is:
+SHA256:9P3fhdgsiB0fiTxGqmfMLIZpGSewLhGwR75AOuadAGcwDvcg ec2-user@xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+The key's randomart image is:
++---[RSA 2048]----+
+|=oo.             |
+| *+= .        .  |
+|++B.o o .    . . |
+|oE.+ o o . .o o  |
+|o o o + S o=.o . |
+|.o   o + .=.o.o  |
+|.     =   .o.=.  |
+|     .     o..o  |
+|            oo   |
++----[SHA256]-----+
+$
+```
 
 ### Deploy infra using below Terraform commands
 
